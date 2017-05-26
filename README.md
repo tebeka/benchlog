@@ -15,5 +15,6 @@ Then when running benchmarks do
 
      go test -exec benchlog -v -run XXX -bench .
 
-Logs will be save in `.bench.log` (markdown format). You can change the log
-file by setting `BENCHLOG_FILE` environment variable.
+Logs will be save in `.benchlog` (markdown format) as well as some metadata and
+git diff. You can change the log directory by setting `BENCHLOG_DIR`
+environment variable.
