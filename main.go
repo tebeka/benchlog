@@ -4,16 +4,16 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"html/template"
 	"io"
 	"os"
 	"os/exec"
 	"strings"
+	"text/template"
 	"time"
 )
 
 const (
-	defaultLog = ".bench.md"
+	defaultLog = ".bench.log"
 	hdrTmpl    = `
 # {{.Time}}
 
