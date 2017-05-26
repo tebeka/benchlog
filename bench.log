@@ -1,3 +1,0 @@
-BenchmarkRoundtripFixed-4       	 2000000	       673 ns/op	       0 B/op	       0 allocs/op
-BenchmarkRoundtripUnmarshal-4   	 1000000	      1000 ns/op	     208 B/op	       3 allocs/op
-PASS
