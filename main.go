@@ -47,6 +47,7 @@ type Meta struct {
 	CPUCount int
 }
 
+// CPUModel returns the machine CPU model
 func CPUModel() string {
 	file, err := os.Open("/proc/cpuinfo")
 	if err != nil {
@@ -96,7 +97,6 @@ func metaData() *Meta {
 		ver = Unknown
 	}
 	meta.Version = ver
-
 	return meta
 }
 
