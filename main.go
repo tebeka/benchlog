@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"flag"
 	"fmt"
@@ -9,6 +10,7 @@ import (
 	"os/exec"
 	"os/user"
 	"path"
+	"runtime"
 	"strings"
 	"text/template"
 	"time"
@@ -20,10 +22,12 @@ const (
 # {{.Time}}
 
 ## Meta
-command: {{.Command}}
-version: {{.Version}}
-host: {{.Host}}
-user: {{.User}}
+Command: {{.Command}}
+Version: {{.Version}}
+Host: {{.Host}}
+User: {{.User}}
+CPU: {{.CPUModel}}
+Cores: {{.CPUCount}}
 
 ## Output
 `
@@ -34,11 +38,34 @@ user: {{.User}}
 
 // Meta is bench metadata
 type Meta struct {
-	Command string
-	Host    string
-	Time    string
-	User    string
-	Version string
+	Command  string
+	Host     string
+	Time     string
+	User     string
+	Version  string
+	CPUModel string
+	CPUCount int
+}
+
+func CPUModel() string {
+	file, err := os.Open("/proc/cpuinfo")
+	if err != nil {
+		return "N/A"
+	}
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		//  model name	: Intel(R) Core(TM) i7-7500U CPU @ 2.70GHz
+		if !strings.HasPrefix(scanner.Text(), "model name") {
+			continue
+		}
+		fields := strings.SplitN(scanner.Text(), ":", 2)
+		if len(fields) < 2 {
+			return "N/A"
+		}
+		return strings.TrimSpace(fields[1])
+	}
+
+	return "N/A"
 }
 
 // metaData returns current metadata
@@ -61,6 +88,8 @@ func metaData() *Meta {
 	meta.User = uname
 	meta.Time = time.Now().Format(time.RFC3339)
 	meta.Command = strings.Join(os.Args[1:], " ")
+	meta.CPUModel = CPUModel()
+	meta.CPUCount = runtime.NumCPU()
 
 	ver, err := gitVersion()
 	if err != nil {
